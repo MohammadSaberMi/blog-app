@@ -11,7 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import * as yup from 'yup';
 import Button from '@/pages/components/ui/Button';
-import { singinApi } from '@/services/authSrvice';
+import { signupApi } from '@/services/authSrvice';
 
 // Yup schema
 const schema = yup.object({
@@ -35,7 +35,7 @@ function Signup() {
 
   const onSubmit = async (values) => {
     try {
-      const { user } = await singinApi(values); // Corrected 'singinApi' to 'signinApi'
+      const { user } = await signupApi(values); // Corrected 'singinApi' to 'signinApi'
       console.log(user);
     } catch (error) {
       console.log(error?.response?.data?.message); // Error logging with optional chaining
