@@ -4,14 +4,10 @@ import Author from './Author';
 import { ClockIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import BlogInteraction from './BlogInteraction';
+import { getPost } from '../../../services/postServices';
 
 async function PostList() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post/list`);
-
-  const {
-    data: { posts },
-  } = await res.json();
-  console.log(posts);
+  const posts = await getPost();
   return (
     <div className="grid grid-cols-12 gap-8">
       {posts.length > 0

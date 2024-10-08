@@ -1,16 +1,30 @@
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
 import React from 'react';
+import { getPost, getPostSlug } from '../../../services/postServices';
+export const dynamicParams = false; // true | false,
+export async function generateStaticParams() {
+  const posts = await getPost();
+  const slugs = posts.slice(0, 10).map((post) => ({ slug: post.slug }));
+
+  return slugs;
+}
+
+export async function generateMetadata({ params }) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/post/slug/${params.slug}`
+  );
+  const { data } = await res.json();
+  const { post } = data || {};
+
+  return {
+    title: `پست ${post.title}`,
+  };
+}
 
 async function SinglePost({ params }) {
-  console.log(params);
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/post/slug/${params.postSlugs}`,
-    { cache: 'no-store' }
-  );
-  const {
-    data: { post },
-  } = await res.json();
-
+  const post = await getPostSlug(params.slug);
+  if (!post) notFound();
   return (
     <div className="text-secondary-600 max-w-screen-md mx-auto">
       <h1 className="text-secondary-700 text-2xl font-bold mb-8">
@@ -23,6 +37,7 @@ async function SinglePost({ params }) {
           className="object-cover object-center hover:scale-110 transition-all ease-out duration-300"
           fill
           src={post.coverImageUrl}
+          alt={post.title}
         />
       </div>
       {/*{post.related.length > 0 ? <RelatedPost posts={post.related} /> : null}*/}

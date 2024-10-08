@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function CoverImage({ slug, coverImageUrl }) {
+export default function CoverImage({ slug, coverImageUrl, title }) {
   return (
     <div className="relative aspect-video overflow-hidden rounded-lg mb-6">
       <Link href={`/blogs/${slug}`}>
@@ -10,6 +10,7 @@ export default function CoverImage({ slug, coverImageUrl }) {
           fill
           quality={90}
           className="object-cover object-center hover:scale-110 transition-all ease-out duration-300"
+          alt={title}
         />
       </Link>
     </div>
