@@ -1,5 +1,7 @@
+import { Toaster } from 'react-hot-toast';
 import Header from './components/Header';
 import vazirFont from './constants/localFont';
+import AuthProvier from './context/AuthContxt';
 import './styles/globals.css';
 
 //const geistSans = localFont({
@@ -25,8 +27,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" dir="rtl">
       <body className={`${vazirFont.variable} font-sans min-h-screen`}>
-        <Header />
-        <div className="container"> {children}</div>
+        <AuthProvier>
+          <Toaster />
+          <Header />
+          <div className="container"> {children}</div>
+        </AuthProvier>
       </body>
     </html>
   );

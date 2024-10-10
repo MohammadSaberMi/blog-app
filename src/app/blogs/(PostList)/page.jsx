@@ -1,29 +1,32 @@
 import React from 'react';
-import PostList from '../_components/postList';
-import { Suspense } from 'react';
-import Spinner from 'app/components/ui/Spinner';
+import BlogList from '../_components/PostList';
+import { cookies } from 'next/headers';
+import setCookiesOnReq from '@/utils/setCookieOnReq';
+import { getPost } from '@/services/postServices';
+import queryString from 'query-string';
 
 //export const revalidate = 0;
-export const experimental_ppr = true;
-async function BlogsPage() {
-  //await new Promise((resolve) => setTimeout(resolve, 2000));
+//export const experimental_ppr = true;
+async function BlogsPage({ searchParams }) {
+  const queries = queryString.stringify(searchParams);
+  const cookieStore = cookies();
+  const options = setCookiesOnReq(cookieStore);
+  const posts = await getPost(queries, options);
+  const { search } = searchParams;
 
   return (
     <div>
-      <div>
-        دستور export const expermental_ppr = true; احتمالاً مربوط به یک ویژگی
-        آزمایشی در Next.js است. با این حال، در کد بالا، expermental_ppr (که
-        احتمالاً باید experimental_ppr باشد) به عنوان یک متغیر صادر می‌شود. این
-        متغیر ممکن است برای فعال‌سازی برخی قابلیت‌های آزمایشی یا ویژگی‌های
-        پیش‌نمایش استفاده شود. چند نکته: تایپ خطا؟: احتمالاً منظور شما
-        experimental_ppr بوده است که به ویژگی‌های آزمایشی یا "Preview Mode"
-        مربوط می‌شود. اگر ppr مخفف ویژگی خاصی باشد، باید در مستندات بررسی شود.
-        استفاده از ویژگی‌های آزمایشی: معمولاً در فایل‌های تنظیماتی مانند
-        next.config.js ویژگی‌های آزمایشی به این شکل اضافه می‌شوند:
-      </div>
-      <Suspense fallback={<Spinner />}>
-        <PostList />
-      </Suspense>
+      {search ? (
+        <p className="mb-4 text-slate-700">
+          {posts.length === 0
+            ? 'هیچ پستی یافت نشد '
+            : `نشان دادن ${posts.length} نتیجه برای`}
+          <span className="font-bold"> &quot;{search}&quot;</span>
+        </p>
+      ) : null}
+      {/*<Suspense fallback={<Spinner />}>*/}
+      <BlogList posts={posts} />
+      {/*</Suspense>*/}
     </div>
   );
 }
